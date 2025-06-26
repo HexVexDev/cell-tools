@@ -1,0 +1,13 @@
+ {
+        "toolDescription": "This tool allows the evaluation of Ripley's K Function response for a particular image. The image is binarized and then tested with several windows of observation to evaluate its clustering behaviour against Complete Spatial Randomness (CSR). If the response is greater then there is a clustering behaviour and if its lower the result is a dispersion, an equal response to CSR represents random behaviour. This can help determine if there is accumulation of a certain marker at a region of the cell, indicating a signaling process bound to a region.",
+        "steps":[
+            {
+                "briefDescription":"Upload your image",
+                "deepDescription":"Its best to load a microscopy image."   
+            },
+            {
+                "briefDescription":"Download the images you desire",
+                "deepDescription":"This tool returns the binarized image and a graph that represents its Ripley's K response."   
+            }
+        ]
+    }

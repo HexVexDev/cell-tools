@@ -1,0 +1,11 @@
+fastapi==0.95.1
+uvicorn[standard]==0.22.0
+python-multipart>=0.0.5         # for file upload via Form
+Pillow>=10.0.0                  # for Image handling
+opencv-python-headless>=4.5.5  # cv2 (headless = no GUI, smaller Docker image)
+scikit-learn>=1.2.0            # for KMeans
+matplotlib>=3.7.0              # for plotting clusters
+numpy>=1.23.0
+scikit-image>=0.21.0           # for threshold_otsu
+astropy>=5.3.0                 # for RipleysKEstimator
+python-dotenv>=1.0.0           # optional: load .env

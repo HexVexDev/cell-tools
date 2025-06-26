@@ -1,0 +1,17 @@
+ {
+        "toolDescription": "This tool allows the extraction of colors in a fluorescent image, which represent different markers of interest within a study. The quantification of said markers can be relevant to compare different treatments and describe a particular effect. This tool uses k-Means to segment the image colors and returns the best classification. You can copy the intensity values calculated per image, this can help compare against control levels of the marker that you wish to evaluate.",
+        "steps":[
+            {
+                "briefDescription":"Select your image",
+                "deepDescription":"Its best to load a microscopy image."   
+            },
+            {
+                "briefDescription":"Select the number of fluorophores used",
+                "deepDescription":"You can select up to 5."   
+            },
+            {
+                "briefDescription":"Download the images you desire",
+                "deepDescription":"One of them matches the background which can be used for correction purposes."   
+            }
+        ]
+    }

@@ -1,0 +1,154 @@
+ .row{
+    margin:                 2% 0px;
+}
+
+.tool-header{
+    margin-top: 2%;
+    font-weight: 800;
+    text-align: center;
+}
+
+.img-intensity-container button:hover{
+    background-color: rgb(119, 119, 119);
+    transition: background ease-in-out 0.1s;
+}
+
+button{
+    margin: 0;
+    padding: 10px 20px;
+}
+
+.img-upload{
+    min-height:              20%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.img-upload >p{
+    margin: 0;
+}
+
+.img-container{
+    display: flex;
+    justify-content: center;
+}
+
+.file-uploaded{
+    margin: 0;
+}
+
+.file-uploaded > img{
+    max-width: 300px;
+    max-height: 300px;
+}
+
+.file-uploaded .img-delete{
+    position: absolute;
+}
+
+.no-image{
+    text-align: center;
+    margin: 0;
+    width: 300px;
+    height: 300px;
+    padding: 100px;
+}
+
+.cluster-number{
+    display: flex;
+    justify-content: center;
+    padding: 15px;
+    gap: 10px;
+}
+
+.number-input{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.number-input > p{
+    background-color: white;
+    text-align: center;
+    margin: 0;
+    padding: 10px 20px;
+    cursor:unset;
+}
+
+.disabled{
+    pointer-events: none;
+    opacity: 0.5;
+    cursor:not-allowed;
+}
+
+.img-result-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid rgb(147, 147, 147);
+    border-radius: 10px;
+    padding-top: 10px;
+}
+
+.img-result-container .download-cont{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    position: relative;
+
+}
+
+.img-result-container .download-cont > p{
+    margin: 0;
+}
+
+.img-result-container .img-bold{
+    font-weight: 700;
+}
+
+.img-result-container .intensity{
+    cursor:pointer;
+}
+
+
+.img-result-container  .download-img{
+    cursor: pointer;
+    margin: 10px;
+}
+
+.copied {
+    position: absolute;
+    background: #333;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    margin-top: 5px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    width: fit-content;
+    top: -30%;
+    left: 50%;
+  }
+  
+  .copied.visible {
+    opacity: 1;
+  }
+  
+  .copied::after {
+    content: "";
+    position: absolute;
+    top: 100%; /* below the tooltip */
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+  }
+
+
+
+  

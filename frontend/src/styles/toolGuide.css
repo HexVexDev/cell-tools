@@ -1,0 +1,35 @@
+.tooldesc-container .row{
+    margin: 2% 0px;
+}
+
+.tooldesc-container .header{
+    font-weight: 700;
+    margin-top: 2%;
+    margin-bottom: 0;
+}
+
+.tooldesc-container .tool-desc-box{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.tooldesc-container .step-row{
+    border: 2px solid rgba(0, 0, 0, 0.738);
+    border-radius: 20px;
+    padding: 10px;
+    gap: 10px;
+}
+
+.tooldesc-container .step-row h3{
+    text-align: center;
+}
+
+.tooldesc-container .tool-step-box{
+    border: 2px solid rgba(0, 0, 0, 0.738);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
