@@ -1,14 +1,15 @@
-FROM node:20
+FROM node:18 as build
 
 WORKDIR /app
 
+# Copy only package files first
 COPY package.json package-lock.json ./
-RUN npm install
 
+# Install dependencies inside Docker (not copying local node_modules!)
+RUN npm ci  
+
+# Now copy source code
 COPY . .
 
+# Build the React app
 RUN npm run build
-
-# Serve using serve
-RUN npm install -g serve
-CMD ["serve", "-s", "build", "-l", "3000"]
