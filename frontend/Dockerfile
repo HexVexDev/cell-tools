@@ -1,15 +1,28 @@
-FROM node:18 as build
+# --------- Build Stage ---------
+FROM node:18 AS build
 
 WORKDIR /app
 
-# Copy only package files first
+# Copy only package files first (for caching)
 COPY package.json package-lock.json ./
 
-# Install dependencies inside Docker (not copying local node_modules!)
-RUN npm ci  
+# Install dependencies
+RUN npm ci
 
-# Now copy source code
+# Copy all source files
 COPY . .
 
-# Build the React app
+# Build the React app (output in /app/build)
 RUN npm run build
+
+# --------- Production Stage ---------
+FROM nginx:alpine
+
+# Copy the build output from the previous stage
+COPY --from=build /app/build /usr/share/nginx/html
+
+# Expose port 80 for HTTP traffic
+EXPOSE 80
+
+# Run nginx in the foreground
+CMD ["nginx", "-g", "daemon off;"]
