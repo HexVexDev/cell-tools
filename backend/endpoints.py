@@ -17,13 +17,10 @@ from fastapi.responses import FileResponse
 app = FastAPI()
 
 
-origins = [
-    "https://frontend-production-e099.up.railway.app",  
-]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,          
+    allow_origins=["https://frontend-production-e099.up.railway.app"],          
     allow_credentials=True,
     allow_methods=["GET,POST"],            
     allow_headers=["*"],            
