@@ -18,7 +18,7 @@ app = FastAPI()
 
 
 origins = [
-    "http://frontend-production-e099.up.railway.app",  
+    "https://frontend-production-e099.up.railway.app",  
 ]
 
 app.add_middleware(
