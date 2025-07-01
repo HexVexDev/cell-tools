@@ -13,6 +13,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.8.4",
     "bootstrap": "^5.3.5",
+    "create-react-app": "^5.1.0",
     "emailjs": "^4.0.3",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.9",
