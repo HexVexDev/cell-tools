@@ -11,10 +11,6 @@ import slide3 from '../svgIcons/Slide 3.png'
 const Home = () => {
 
 
-const serviceID =process.env.REACT_APP_SERVICE_ID;
-const templateID = process.env.REACT_APP_TEMPLATE_ID;
-const userID = process.env.REACT_APP_USER_ID;
-
 function sendEmail(e) {
   e.preventDefault(); // Prevents form reload
 
@@ -28,7 +24,7 @@ function sendEmail(e) {
     },
   });
 
-  emailjs.sendForm(serviceID, templateID, e.target, userID)
+  emailjs.sendForm("service_6di54tj", "template_h8h9q48", e.target, "AhDgqsDb0b-i6EeiX")
     .then((result) => {
       // Check for status
       if (result.status === 200) {
