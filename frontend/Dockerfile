@@ -22,7 +22,7 @@ FROM nginx:alpine
 COPY --from=build /app/build /usr/share/nginx/html
 
 # Expose port 80 for HTTP traffic
-EXPOSE 3000
+EXPOSE 80
 
 # Run nginx in the foreground
 CMD ["nginx", "-g", "daemon off;"]
