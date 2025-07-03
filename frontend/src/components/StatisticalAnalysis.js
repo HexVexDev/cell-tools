@@ -19,8 +19,6 @@ const StatisticalAnalysis = () =>{
     const [imgURL, setImgURL] = useState("");
     const [images,setImages] = useState(null);
 
-    const apiURL = process.env.REACT_APP_API_URL;
-    const endpoint = `${apiURL}/statistical`;
 
     const uploadImage = () => {
          
@@ -37,7 +35,7 @@ const StatisticalAnalysis = () =>{
 
             const formData = new FormData();
             formData.append("image", file);
-            axios.post(endpoint, formData, {
+            axios.post('http://localhost:8000/statistical', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 }

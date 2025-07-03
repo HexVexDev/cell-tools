@@ -24,16 +24,13 @@ const ImageCluster = () => {
 
     const[copyClip,setCopyClip] = useState(false);
 
-    const apiURL = process.env.REACT_APP_API_URL;
-    const endpoint = `${apiURL}/cluster`;
-
     const uploadImage = () => {
         
         if (file && file.name) {
             const formData = new FormData();
             formData.append("clusters",cluster)
             formData.append("image", file);
-            axios.post(endpoint, formData, {
+            axios.post('http://localhost:8000/cluster', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 }
