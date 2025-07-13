@@ -57,7 +57,7 @@ b. Clustered Control
 
 
 📈 Use Case Inspiration
-This tool was inspired by my own research with MDA-MB-231 cells. I applied it to analyze spatial clustering of Reactive Oxygen Species (ROS) across full cell cultures in wound healing assays — aiming to detect possible signaling mechanisms at the population scale.
+This tool was inspired by my own research with MDA-MB-231 cells. I applied it to analyze spatial clustering of Reactive Oxygen Species (ROS) across full cell cultures in wound healing assays — aiming to detect possible signaling mechanisms at the culture scale.
 
 <img width="169" height="177" alt="Image" src="https://github.com/user-attachments/assets/9bd6dd36-53fd-4e30-9ae3-42aafe25711b" />
 
@@ -75,9 +75,11 @@ To get started, you’ll need:
 
 1. Clone the repo and build the containers:
 
-git clone https://github.com/HexVexDev/cell-tools.git
-cd cell-tools
-docker compose up --build
+- git clone https://github.com/HexVexDev/cell-tools.git
+
+- cd cell-tools
+
+- docker compose up --build
 
 2. Visit http://localhost:3000 in your browser.
 
