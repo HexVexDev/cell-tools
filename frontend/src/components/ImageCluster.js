@@ -3,6 +3,8 @@ import axios from 'axios';
 import {Col, Container, Row} from 'react-bootstrap';
 import '../styles/imgIntensity.css'
 import {FileUploader} from "react-drag-drop-files";
+import Swal from "sweetalert2";
+
 
 import ToolGuide from "./ToolGuide";
 import data from "../toolGuides/colorExtraction/data.json";
@@ -24,9 +26,18 @@ const ImageCluster = () => {
 
     const[copyClip,setCopyClip] = useState(false);
 
-    const uploadImage = () => {
-        
+
+     const uploadImage = () => {   
         if (file && file.name) {
+            Swal.fire({
+            title: 'Processing your request...',
+            text: 'Please wait a moment.',
+            allowOutsideClick: false,
+            didOpen: () => {
+              Swal.showLoading();
+            },
+          });
+          
             const formData = new FormData();
             formData.append("clusters",cluster)
             formData.append("image", file);
@@ -34,8 +45,28 @@ const ImageCluster = () => {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 }
-            }).then((response) => setImages(response.data))
-                .catch((error) => console.error("Upload error:", error));
+            }).then((response) => {
+                if (response.status === 200) {
+                    setImages(response.data);
+                        Swal.fire({
+                          icon: 'success',
+                          title: 'Processed!',
+                          text: 'Your images were generated succesfully.',
+                          timer: 1500,
+                          showConfirmButton: false,
+                        });
+                      } else {
+                        throw new Error(`Unexpected status: ${response.status}`);
+                      }
+                })
+                .catch((error) => {
+                    console.error(error);
+                      Swal.fire({
+                        icon: 'error',
+                        title: 'Failed to process',
+                        text: 'There was an error processing your request. Please try again.',
+                      });
+                    });
         }
     }
 

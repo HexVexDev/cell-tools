@@ -1,29 +1,41 @@
-from fastapi import FastAPI,File,UploadFile,Form
+from fastapi import FastAPI,File,UploadFile,Form,HTTPException,APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image
 import io
 import json
 import cv2,base64
 from sklearn.cluster import KMeans
+import matplotlib
+matplotlib.use("Agg")  # Headless mode
 import matplotlib.pyplot as plt
 import numpy as np
 from skimage.filters import threshold_otsu
-from astropy.stats import RipleysKEstimator
+import pointpats as pp 
 import tempfile
 import uuid
 import os
 from fastapi.responses import FileResponse
+from pathlib import Path
 
 app = FastAPI()
 
+# ---------- configurable “safety” constants -------------------
+MAX_DIM = 2048          # longest side in pixels after optional resize
+MAX_PTS = 17_500        # max foreground points sent to K estimator
+RIPLEY_DIR = Path("/app/ripley_output")
+RIPLEY_DIR.mkdir(exist_ok=True, parents=True)
 
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],          
+    allow_origins=[
+        "http://localhost:80",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000"
+    ],
     allow_credentials=True,
-    allow_methods=["GET,POST"],            
-    allow_headers=["*"],            
+    allow_methods=["GET", "POST","OPTIONS"],
+    allow_headers=["*"],
 )
 
 #Encode image array to base64 blob for response(only small images)
@@ -35,18 +47,15 @@ def encode_image_to_base64(img_array):
     return f"data:image/png;base64,{img_bytes}"
 
 #Generates a Ripleys K Function plot
-def plot_ripleys_k_vs_csr(radii, k_vals, k_csr):
-    #Sets fig size
-    fig, ax = plt.subplots(figsize=(8, 5))
-    #Plots K response
-    ax.plot(radii, k_vals, label="Observed K(r)", marker='o')
-    #Plots CSR as control
-    ax.plot(radii, k_csr, label="CSR", linestyle='--', color='gray')
-    ax.set_xlabel("Radius (r)")
+def plot_ripley(support, k_emp, k_csr):
+    """Return a matplotlib Figure comparing empirical vs. CSR K."""
+    fig, ax = plt.subplots()
+    ax.plot(support, k_emp, label="Empirical K(r)")
+    ax.plot(support, k_csr, "--", label="CSR expectation π r²")
+    ax.set_xlabel("Radius r (px)")
     ax.set_ylabel("K(r)")
-    ax.set_title("Ripley's K Function vs CSR")
     ax.legend()
-    ax.grid(True)
+    ax.set_title("Ripley’s K vs. CSR")
     fig.tight_layout()
     return fig
 
@@ -94,70 +103,71 @@ async def upload(
     
 
 #Endpoint for Ripleys K analysis of a selected color or binary mask
+# -----------------------  ENDPOINT  ----------------------------
 @app.post("/statistical")
-async def statanalysis(
-    image: UploadFile = File(...)):
-    #Reads the img
-    contents = await image.read()
-    img = Image.open(io.BytesIO(contents)).convert("L")
-    np_image = np.array(img)
+async def statanalysis(image: UploadFile = File(...)):
+    """Compute Ripley’s K on a binary mask using pointpats (memory‑safe)."""
     
-    #Binarizes the img using otsu's Method
-    threshold = threshold_otsu(np_image)
-    binary = np_image > threshold
-    img_binary = Image.fromarray((binary * 255).astype(np.uint8))
+    # --- load & optional down‑scale --------------------------------------
+    raw_bytes = await image.read()
+    img = Image.open(io.BytesIO(raw_bytes)).convert("L")  # 8‑bit gray
 
-    #Generates a binary base64 img to return
-    image_b64 = encode_image_to_base64(np.array(img_binary))
-   
-    ys, xs = np.nonzero(binary)  #Coords of foreground
-    
+    if max(img.size) > MAX_DIM:
+        img.thumbnail((MAX_DIM, MAX_DIM))  # keeps aspect ratio
 
-    # Get image dimensions
-    height, width = binary.shape
-    area = height * width
+    np_gray = np.array(img)
 
-    # Initialize estimator
-    rk = RipleysKEstimator(area=area, x_max=width, y_max=height, x_min=0, y_min=0)
+    # --- Otsu threshold → binary mask ------------------------------------
+    thresh = threshold_otsu(np_gray)
+    binary = np_gray > thresh
+    bin_uint8 = (binary * 255).astype(np.uint8)
+    b64_mask = encode_image_to_base64(bin_uint8)
 
-    #Sets a maximum radius of evaluation based on the img dimensions
-    r_max = min(width,height)/2
-    #Creates the set of radii to evaluate from 0 to r_max
-    radii = np.linspace(0, r_max, 20)
+    # --- point coordinates of foreground pixels --------------------------
+    ys, xs = np.nonzero(binary)
+    points = np.column_stack((xs, ys))          # shape (N, 2)
 
-    #Estimator entities for both the img and a CSR control
-    k_vals = rk(data=np.column_stack((xs, ys)), radii=radii, mode='ripley')
-    k_csr = rk.poisson(radii)
+    downsampled = False
+    if len(points) > MAX_PTS:
+        indices = np.random.choice(len(points), size=MAX_PTS, replace=False)
+        points = points[indices]
+        downsampled = True
 
-    #Generation of a temp directory with a unique user id to save the img
-    user_tempdir = tempfile.mkdtemp(prefix=f"user_{uuid.uuid4().hex}_")
+    # --- Ripley’s K via pointpats ----------------------------------------
+    h, w = binary.shape
+    area = h * w
+    r_max = min(w, h) / 2
+    support = np.linspace(0, r_max, 50)         # 50 radii from 0 → r_max
 
-    #Generation of ripleys k plot
-    fig = plot_ripleys_k_vs_csr(radii, k_vals, k_csr)
+    support, k_vals = pp.k(points, support=support)        
+    k_csr = np.pi * support**2                  # CSR expectation
 
-    #Final path to save the img using the unique id and a plots name
-    plot_path = os.path.join(user_tempdir, "ripley_k.png")
-    fig.savefig(plot_path)
+    # --- plot & persist ---------------------------------------------------
+    user_dir = RIPLEY_DIR / f"user_{uuid.uuid4().hex}"
+    user_dir.mkdir(parents=True, exist_ok=True)
+    plot_path = user_dir / "ripley_k.png"
 
-    #Return the binarized img of the color and a path to access from a get
-    #endpoint
-    results = [{
-        'binarized_img': image_b64,
-        'plot_id' : os.path.basename(user_tempdir) 
-        }]
+    fig = plot_ripley(support, k_vals, k_csr)
+    fig.savefig(plot_path, dpi=150)
+    plt.close(fig)
 
-    return results
+    return {
+        "binarized_img": b64_mask,
+        "plot_id": user_dir.name,
+        "n_points": int(len(points)),
+        "downsampled": len(points) < len(xs),   # True if we sampled
+    }
 
-#Endpoint for img viewing
 @app.get("/download/ripley-k/{tempdir}")
 def download_ripley_k(tempdir: str):
-    #Location of base temp path and join of the unique temp dir
-    base_path = os.path.join(tempfile.gettempdir(), tempdir)
-    #Final img path
-    file_path = os.path.join(base_path, "ripley_k.png")
+    base_path = Path("/app/ripley_output") / tempdir
+    file_path = base_path / "ripley_k.png"
 
-    #If there is not path, raise a 404 which will be handled by the front. 
-    if not os.path.exists(file_path):
+    if not file_path.exists():
         raise HTTPException(status_code=404, detail="Not found")
-    #Return the img view to an img element
-    return FileResponse(path=file_path, media_type="image/png", filename="ripley_k.png")
+
+    return FileResponse(
+        path=str(file_path),
+        media_type="image/png",
+        filename="ripley_k.png"
+    )

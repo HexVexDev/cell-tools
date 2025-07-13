@@ -1,28 +1,14 @@
-# --------- Build Stage ---------
-FROM node:18 AS build
+# frontend/Dockerfile
 
+FROM node:18-alpine AS build
 WORKDIR /app
-
-# Copy only package files first (for caching)
-COPY package.json package-lock.json ./
-
-# Install dependencies
-RUN npm ci
-
-# Copy all source files
 COPY . .
-
-# Build the React app (output in /app/build)
+RUN npm install
 RUN npm run build
 
-# --------- Production Stage ---------
+# Serve using nginx
 FROM nginx:alpine
-
-# Copy the build output from the previous stage
 COPY --from=build /app/build /usr/share/nginx/html
-
-# Expose port 80 for HTTP traffic
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
-
-# Run nginx in the foreground
 CMD ["nginx", "-g", "daemon off;"]

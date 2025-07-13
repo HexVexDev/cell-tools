@@ -1,6 +1,4 @@
 import { Col, Container, Row, Carousel } from "react-bootstrap";
-import Swal from 'sweetalert2';
-import emailjs from '@emailjs/browser'
 import '../styles/mainStyles.css'
 import celllogo from '../svgIcons/weblogo.jpg'
 import slide2 from '../svgIcons/Slide 2.png'
@@ -9,46 +7,6 @@ import slide3 from '../svgIcons/Slide 3.png'
 
 
 const Home = () => {
-
-
-function sendEmail(e) {
-  e.preventDefault(); // Prevents form reload
-
-  // Show loading modal
-  Swal.fire({
-    title: 'Sending email...',
-    text: 'Please wait a moment.',
-    allowOutsideClick: false,
-    didOpen: () => {
-      Swal.showLoading();
-    },
-  });
-
-  emailjs.sendForm("service_6di54tj", "template_h8h9q48", e.target, "AhDgqsDb0b-i6EeiX")
-    .then((result) => {
-      // Check for status
-      if (result.status === 200) {
-        e.target.reset();
-        Swal.fire({
-          icon: 'success',
-          title: 'Sent!',
-          text: 'Your email was sent successfully.',
-          timer: 2500,
-          showConfirmButton: false,
-        });
-      } else {
-        throw new Error(`Unexpected status: ${result.status}`);
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Failed to send',
-        text: 'There was an error sending your email. Please try again.',
-      });
-    });
-}
   return (
     <Container>
       <Row>
@@ -94,18 +52,6 @@ function sendEmail(e) {
               </Carousel.Item>
             </Carousel>
           </div>
-        </Col>
-      </Row>
-      <Row className="contact-container">
-        <Col className="data-wrapper">
-              <h5>If you liked this project send me a message:</h5>
-              <form className="contact-form" onSubmit={sendEmail}>
-                <label>Company Name</label>
-                <input className="comp-name" type="text" name="name" required />
-                <label>Message</label>
-                <textarea className="comp-message" name="message" required/>
-                <input type="submit" value="Send" />
-              </form>
         </Col>
       </Row>
     </Container>

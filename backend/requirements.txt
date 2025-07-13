@@ -7,5 +7,5 @@ scikit-learn>=1.2.0            # for KMeans
 matplotlib>=3.7.0              # for plotting clusters
 numpy>=1.23.0
 scikit-image>=0.21.0           # for threshold_otsu
-astropy>=5.3.0                 # for RipleysKEstimator
+pointpats>=2.3
 python-dotenv>=1.0.0           # optional: load .env

@@ -41,7 +41,7 @@ const StatisticalAnalysis = () =>{
                 }
             }).then((response) => {
                 if (response.status === 200) {
-                    setImages(response.data[0]);
+                    setImages(response.data);
                         Swal.fire({
                           icon: 'success',
                           title: 'Processed!',
