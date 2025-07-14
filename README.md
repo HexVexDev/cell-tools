@@ -1,4 +1,14 @@
-🧪 Cell Tools
+# 🧪 Cell Tools
+
+
+[![Docker Build](https://img.shields.io/badge/docker-ready-blue)](https://www.docker.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Frontend: React](https://img.shields.io/badge/frontend-react-61dafb)](https://reactjs.org/)
+[![Backend: FastAPI](https://img.shields.io/badge/backend-fastapi-009688)](https://fastapi.tiangolo.com/)
+[![Python](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/)
+[![Last Commit](https://img.shields.io/github/last-commit/HexVexDev/cell-tools)](https://github.com/HexVexDev/cell-tools)
+[![Repo Size](https://img.shields.io/github/repo-size/HexVexDev/cell-tools)](https://github.com/HexVexDev/cell-tools)
+
 This project was designed to analyze fluorescent microscopy images. These images typically represent samples treated with fluorophores that bind to specific molecules or proteins. The pixel intensity in such images correlates with the concentration of the target, making it possible to compare experimental conditions and assess treatment effects on the sample.
 
 The core use case for this project is the analysis of cellular images stained with one or more fluorophores. It includes two main tools:
