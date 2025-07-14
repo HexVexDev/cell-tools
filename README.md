@@ -6,8 +6,6 @@
 [![Frontend: React](https://img.shields.io/badge/frontend-react-61dafb)](https://reactjs.org/)
 [![Backend: FastAPI](https://img.shields.io/badge/backend-fastapi-009688)](https://fastapi.tiangolo.com/)
 [![Python](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/)
-[![Last Commit](https://img.shields.io/github/last-commit/HexVexDev/cell-tools)](https://github.com/HexVexDev/cell-tools)
-[![Repo Size](https://img.shields.io/github/repo-size/HexVexDev/cell-tools)](https://github.com/HexVexDev/cell-tools)
 
 This project was designed to analyze fluorescent microscopy images. These images typically represent samples treated with fluorophores that bind to specific molecules or proteins. The pixel intensity in such images correlates with the concentration of the target, making it possible to compare experimental conditions and assess treatment effects on the sample.
 
@@ -71,7 +69,9 @@ This tool was inspired by my own research with MDA-MB-231 cells. I applied it to
 
 <img width="169" height="177" alt="Image" src="https://github.com/user-attachments/assets/9bd6dd36-53fd-4e30-9ae3-42aafe25711b" />
 
-By HexVexDev
+By **HexVexDev**  
+🔗 [LinkedIn](https://www.linkedin.com/in/your-profile-link/)
+
 
 🚀 Quickstart (Docker Compose)
 To get started, you’ll need:
@@ -92,4 +92,6 @@ To get started, you’ll need:
 - docker compose up --build
 
 2. Visit http://localhost:3000 in your browser.
+
+
 
